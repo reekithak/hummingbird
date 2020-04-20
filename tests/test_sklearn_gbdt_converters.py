@@ -80,6 +80,22 @@ class TestSklearnGradientBoostingClassifier(unittest.TestCase):
                 model.predict_proba(X), pytorch_model(torch.from_numpy(X))[1].data.numpy(), rtol=1e-06, atol=1e-06
             )
 
+    # Calling predict instead of predict_proba
+    def test_GB_trees_classifier_converter_predict(self):
+        warnings.filterwarnings("ignore")
+
+        model = GradientBoostingClassifier(n_estimators=10, max_depth=8)
+        X = np.random.rand(100, 200)
+        X = np.array(X, dtype=np.float32)
+        y = np.random.randint(3, size=100)
+
+        model.fit(X, y)
+        pytorch_model = convert_sklearn(model)
+        self.assertTrue(pytorch_model is not None)
+        np.testing.assert_allclose(
+            model.predict(X), pytorch_model(torch.from_numpy(X))[0].data.numpy(), rtol=1e-06, atol=1e-06
+        )
+
     # Failure Cases
     def test_sklearn_random_forest_classifier_raises_wrong_type(self):
         warnings.filterwarnings("ignore")

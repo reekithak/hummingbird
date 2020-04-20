@@ -13,7 +13,7 @@ from sklearn.tree import DecisionTreeClassifier
 from hummingbird.exceptions import MissingConverter
 
 
-class TestSklearnRandomForestConverter(unittest.TestCase):
+class TestSklearnDecisionTreeConverter(unittest.TestCase):
     def _run_decision_tree_classifier_converter(self, num_classes, extra_config={}, labels_shift=0):
         warnings.filterwarnings("ignore")
         for max_depth in [1, 3, 8, 10, 12, None]:
@@ -135,6 +135,19 @@ class TestSklearnRandomForestConverter(unittest.TestCase):
             np.testing.assert_allclose(
                 model.predict_proba(X), pytorch_model(torch.from_numpy(X))[1].numpy(), rtol=1e-06, atol=1e-06
             )
+
+    # Calling predict instead of predict_proba
+    def test_decision_tree_classifier_converter_predict(self):
+        warnings.filterwarnings("ignore")
+        model = RandomForestClassifier(n_estimators=10, max_depth=8)
+        X = np.random.rand(100, 200)
+        X = np.array(X, dtype=np.float32)
+        y = np.random.randint(3, size=100)
+
+        model.fit(X, y)
+        pytorch_model = convert_sklearn(model)
+        self.assertTrue(pytorch_model is not None)
+        np.testing.assert_allclose(model.predict(X), pytorch_model(torch.from_numpy(X))[0].numpy(), rtol=1e-06, atol=1e-06)
 
     # Failure Cases
     def test_sklearn_decision_tree_classifier_raises_wrong_type(self):
