@@ -147,6 +147,9 @@ class TestSklearnDecisionTreeConverter(unittest.TestCase):
         model.fit(X, y)
         pytorch_model = convert_sklearn(model)
         self.assertTrue(pytorch_model is not None)
+        np.testing.assert_allclose(
+            model.predict_proba(X), pytorch_model(torch.from_numpy(X))[1].numpy(), rtol=1e-06, atol=1e-06
+        )
         np.testing.assert_allclose(model.predict(X), pytorch_model(torch.from_numpy(X))[0].numpy(), rtol=1e-06, atol=1e-06)
 
     # Failure Cases
