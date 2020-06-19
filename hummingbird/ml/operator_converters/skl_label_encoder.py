@@ -45,7 +45,7 @@ class NumericLabelEncoder(torch.nn.Module):
         x = x.view(-1, 1)
         try:  # has GPU.
             return torch.argmax(torch.eq(x, self.check_tensor), dim=1)
-        except Exception:  # Tensorflow issue: https://github.com/allenai/allennlp/issues/3455
+        except Exception:  # Tensorflow issue?: https://github.com/allenai/allennlp/issues/3455
             # fix by casting bool to int
             # TODO: clearly there is a function that does this for us....
             def convert(row):
@@ -56,6 +56,8 @@ class NumericLabelEncoder(torch.nn.Module):
 
 
 def convert_sklearn_label_encoder(operator, device, extra_config):
+    # TODO Add docstring here!  Please see example at
+    # https://github.com/microsoft/hummingbird/blob/master/hummingbird/ml/operator_converters/skl_linear.py#L57
     if all([type(x) == str for x in operator.raw_operator.classes_]):
         raise RuntimeError(
             "Hummingbird currently supports only integer labels for class labels. Please file an issue at https://github.com/microsoft/hummingbird."
