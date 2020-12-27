@@ -74,6 +74,7 @@ XGBRegressor,
 "Binarizer"
 "Cast",
 "Concat",
+"FeatureVectorizer"
 "LabelEncoder",
 "LinearClassifier",
 "LinearRegressor",
@@ -295,6 +296,7 @@ def _build_onnxml_operator_list():
             # Preprocessing
             "ArrayFeatureExtractor",
             "Binarizer",
+            "FeatureVectorizer",
             "LabelEncoder",
             "OneHotEncoder",
             "Normalizer",
@@ -464,3 +466,6 @@ BATCH_SIZE = "batch_size"
 
 REMAINDER_SIZE = "remainder_size"
 """Determines the number of rows that an auxiliary remainder model can accept."""
+
+MAX_STRING_LENGTH = "max_string_length"
+"""Maximum expected length for string features. By deafult this value is set using the training information."""
